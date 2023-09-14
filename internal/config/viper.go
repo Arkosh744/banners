@@ -24,6 +24,11 @@ type Config struct {
 		SSLMode  string `mapstructure:"sslmode"`
 	} `mapstructure:"postgres"`
 
+	Kafka struct {
+		Brokers []string `mapstructure:"brokers"`
+		Topic   string   `mapstructure:"topic"`
+	} `mapstructure:"kafka"`
+
 	Log struct {
 		Preset string `mapstructure:"preset"`
 	} `mapstructure:"log"`

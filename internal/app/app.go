@@ -7,13 +7,13 @@ import (
 	"github.com/Arkosh744/banners/internal/log"
 	"github.com/Arkosh744/banners/pkg/closer"
 	"github.com/Arkosh744/banners/pkg/interceptor"
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"go.uber.org/zap"
+	"google.golang.org/grpc/reflection"
 	"net"
 	"sync"
 
-	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 type App struct {
@@ -24,8 +24,7 @@ type App struct {
 func NewApp(ctx context.Context) (*App, error) {
 	app := &App{}
 
-	err := app.initDeps(ctx)
-	if err != nil {
+	if err := app.initDeps(ctx); err != nil {
 		return nil, err
 	}
 
@@ -41,7 +40,6 @@ func (app *App) Run() error {
 	wg := sync.WaitGroup{}
 
 	wg.Add(1)
-
 	go func() {
 		defer wg.Done()
 

@@ -22,8 +22,19 @@ local-migration-up:
 local-migration-down:
 	${GOOSEBIN} -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} down -v
 
-build: bindir
-	go build -o ${BINDIR}/app ${PACKAGE}
+install-go-deps:
+	mkdir -p bin
+	GOBIN=$(BINDIR) go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1
+	GOBIN=$(BINDIR) go install -mod=mod google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+
+generate:
+	mkdir -p pkg/banners_v1
+	protoc --proto_path api/banners_v1 --proto_path vendor.protogen \
+	--go_out=pkg/banners_v1 --go_opt=paths=source_relative \
+	--plugin=protoc-gen-go=bin/protoc-gen-go \
+	--go-grpc_out=pkg/banners_v1 --go-grpc_opt=paths=source_relative \
+	--plugin=protoc-gen-go-grpc=bin/protoc-gen-go-grpc \
+	api/banners_v1/banners.proto
 
 test-integration:
 	go test -tags=integration -cover ./...
@@ -59,3 +70,11 @@ install-smartimports: bindir
 	test -f ${SMARTIMPORTS} || \
 		(GOBIN=${BINDIR} go install github.com/pav5000/smartimports/cmd/smartimports@latest && \
 		mv ${BINDIR}/smartimports ${SMARTIMPORTS})
+
+vendor-proto:
+		@if [ ! -d vendor.protogen/google ]; then \
+			git clone https://github.com/googleapis/googleapis vendor.protogen/googleapis &&\
+			mkdir -p  vendor.protogen/google/ &&\
+			mv vendor.protogen/googleapis/google/api vendor.protogen/google &&\
+			rm -rf vendor.protogen/googleapis ;\
+		fi
