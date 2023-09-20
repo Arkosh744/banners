@@ -5,10 +5,20 @@ SMARTIMPORTS=${BINDIR}/smartimports_${GOVER}
 LINTVER=v1.51.1
 LINTBIN=${BINDIR}/lint_${GOVER}_${LINTVER}
 GOOSEBIN=${BINDIR}/goose
-PACKAGE=github.com/Arkosh744/banners
+PACKAGE=github.com/Arkosh744/banners/cmd/server
 
 LOCAL_MIGRATION_DIR=./migrations
-LOCAL_MIGRATION_DSN="host=localhost port=6662 dbname=banners-db user=banners-user password=banners-pass sslmode=disable"
+LOCAL_MIGRATION_DSN="host=localhost port=5439 dbname=banners-db user=banners-user password=banners-pass sslmode=disable"
+
+bindir:
+	mkdir -p ${BINDIR}
+
+build: bindir
+	go build -o ${BINDIR}/app ${PACKAGE}
+
+run: build
+	sudo docker compose up --force-recreate --build -d
+	make local-migration-up
 
 new-migration:
 	${GOOSEBIN} -dir ${LOCAL_MIGRATION_DIR} create new-migration sql
@@ -44,14 +54,8 @@ test:
 
 test-all: test-integration test
 
-run:
-	go run ${PACKAGE}
-
 lint: install-lint
 	${LINTBIN} run
-
-bindir:
-	mkdir -p ${BINDIR}
 
 format: install-smartimports
 	${SMARTIMPORTS} -exclude internal/mocks

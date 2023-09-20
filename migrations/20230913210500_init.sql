@@ -1,18 +1,18 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE slots
+CREATE TABLE IF NOT EXISTS slots
 (
     id          serial PRIMARY KEY NOT NULL,
     description text               NOT NULL DEFAULT ''
 );
 
-CREATE TABLE banners
+CREATE TABLE IF NOT EXISTS banners
 (
     id          serial PRIMARY KEY NOT NULL,
     description text               NOT NULL DEFAULT ''
 );
 
-CREATE TABLE social_groups
+CREATE TABLE IF NOT EXISTS social_groups
 (
     id          serial PRIMARY KEY NOT NULL,
     description text               NOT NULL DEFAULT ''
@@ -21,16 +21,16 @@ CREATE TABLE social_groups
 INSERT INTO social_groups (description)
 VALUES ('девушки 20-25'),
        ('дедушки 80+'),
-       ('собачники 30-40');
+       ('пожилые 30-40');
 
-CREATE TABLE banner_slot
+CREATE TABLE IF NOT EXISTS banner_slot
 (
     slot_id   bigint NOT NULL,
     banner_id bigint NOT NULL,
     PRIMARY KEY (slot_id, banner_id)
 );
 
-CREATE TABLE views
+CREATE TABLE IF NOT EXISTS views
 (
     id        serial PRIMARY KEY NOT NULL,
     slot_id   bigint             NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE views
     date      timestamp          NOT NULL default NOW()
 );
 
-CREATE TABLE clicks
+CREATE TABLE IF NOT EXISTS clicks
 (
     id        serial PRIMARY KEY NOT NULL,
     slot_id   bigint             NOT NULL,

@@ -1,6 +1,8 @@
 package banners_v1
 
 import (
+	"context"
+	"github.com/Arkosh744/banners/internal/models"
 	desc "github.com/Arkosh744/banners/pkg/banners_v1"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -18,11 +20,11 @@ func NewImplementation(s Service) *Implementation {
 }
 
 type Service interface {
-	CreateSlot(context.Context, *CreateSlotReq) (*SlotResp, error)
-	CreateBanner(context.Context, *CreateBannerReq) (*BannerResp, error)
-	CreateGroup(context.Context, *CreateGroupReq) (*GroupResp, error)
-	AddBannerToSlot(context.Context, *BannerSlotRequest) (*emptypb.Empty, error)
-	DeleteBannerFromSlot(context.Context, *BannerSlotRequest) (*emptypb.Empty, error)
-	CreateClickEvent(context.Context, *ClickEvent) (*emptypb.Empty, error)
-	NextBanner(context.Context, *NextBannerRequest) (*BannerResp, error)
+	CreateSlot(context.Context, *models.CreateRequest) (*models.Slot, error)
+	CreateBanner(context.Context, *models.CreateRequest) (*models.Banner, error)
+	CreateGroup(context.Context, *models.CreateRequest) (*models.Group, error)
+	AddBannerToSlot(context.Context, *models.BannerSlotRequest) (*emptypb.Empty, error)
+	DeleteBannerFromSlot(context.Context, *models.BannerSlotRequest) (*emptypb.Empty, error)
+	CreateClickEvent(context.Context, *models.ClickEventRequest) (*emptypb.Empty, error)
+	NextBanner(context.Context, *models.NextBannerRequest) (*models.Banner, error)
 }
