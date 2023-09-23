@@ -32,20 +32,20 @@ CREATE TABLE IF NOT EXISTS banner_slot
 
 CREATE TABLE IF NOT EXISTS views
 (
-    id        serial PRIMARY KEY NOT NULL,
-    slot_id   bigint             NOT NULL,
-    banner_id bigint             NOT NULL,
-    group_id  bigint             NOT NULL,
-    date      timestamp          NOT NULL default NOW()
+    id         serial PRIMARY KEY NOT NULL,
+    slot_id    bigint             NOT NULL,
+    banner_id  bigint             NOT NULL,
+    group_id   bigint             NOT NULL,
+    created_at timestamptz        NOT NULL default NOW()
 );
 
 CREATE TABLE IF NOT EXISTS clicks
 (
-    id        serial PRIMARY KEY NOT NULL,
-    slot_id   bigint             NOT NULL,
-    banner_id bigint             NOT NULL,
-    group_id  bigint             NOT NULL,
-    date      timestamp          NOT NULL default NOW()
+    id         serial PRIMARY KEY NOT NULL,
+    slot_id    bigint             NOT NULL,
+    banner_id  bigint             NOT NULL,
+    group_id   bigint             NOT NULL,
+    created_at timestamptz        NOT NULL default NOW()
 );
 -- +goose StatementEnd
 

@@ -26,15 +26,19 @@ func NewProducer(producer sarama.SyncProducer, topic string) Producer {
 const MsgKey = "stats"
 
 type Message struct {
-	BannerID  int       `json:"bannerId"`
-	SlotID    int       `json:"slotId"`
-	GroupID   int       `json:"groupId"`
-	Type      string    `json:"-"`
-	Timestamp time.Time `json:"-"`
+	BannerID int64 `json:"bannerID"`
+	SlotID   int64 `json:"slotID"`
+	GroupID  int64 `json:"groupID"`
 }
 
-func (p *Producer) SendMessage(message Message) error {
-	messageData, err := json.Marshal(message)
+func (p *Producer) SendMessage(BannerID, SlotID, GroupID int64) error {
+	statMessage := Message{
+		BannerID: BannerID,
+		SlotID:   SlotID,
+		GroupID:  GroupID,
+	}
+
+	statMessageBytes, err := json.Marshal(statMessage)
 	if err != nil {
 		return fmt.Errorf("failed to marshal message: %w", err)
 	}
@@ -42,7 +46,7 @@ func (p *Producer) SendMessage(message Message) error {
 	msg := &sarama.ProducerMessage{
 		Topic:     p.topic,
 		Key:       sarama.StringEncoder(MsgKey),
-		Value:     sarama.ByteEncoder(messageData),
+		Value:     sarama.ByteEncoder(statMessageBytes),
 		Partition: -1,
 		Timestamp: time.Now(),
 	}
@@ -53,10 +57,9 @@ func (p *Producer) SendMessage(message Message) error {
 	}
 
 	log.Info("notification sent",
-		zap.Int("BannerID", message.BannerID),
-		zap.Int("GroupID", message.GroupID),
-		zap.Int("SlotID", message.SlotID),
-		zap.String("Type", message.Type),
+		zap.Int64("BannerID", BannerID),
+		zap.Int64("GroupID", GroupID),
+		zap.Int64("SlotID", SlotID),
 		zap.Int32("partition", partition),
 		zap.Int64("offset", offset),
 	)

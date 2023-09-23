@@ -9,7 +9,7 @@ type BannerSlotRequest struct {
 	BannerID int64 `json:"bannerID"`
 }
 
-type ClickEventRequest struct {
+type EventRequest struct {
 	SlotID   int64 `json:"slotID"`
 	BannerID int64 `json:"bannerID"`
 	GroupID  int64 `json:"groupID"`

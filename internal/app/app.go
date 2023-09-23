@@ -83,7 +83,7 @@ func (app *App) initServiceProvider(ctx context.Context) error {
 	return nil
 }
 
-func (app *App) initGrpcServer(ctx context.Context) error {
+func (app *App) initGrpcServer(_ context.Context) error {
 	app.grpcServer = grpc.NewServer(
 		grpc.UnaryInterceptor(grpcMiddleware.ChainUnaryServer(
 			interceptor.LoggingInterceptor,
