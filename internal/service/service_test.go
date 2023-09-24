@@ -5,40 +5,11 @@ import (
 	"errors"
 	"github.com/Arkosh744/banners/pkg/models"
 	"github.com/golang/mock/gomock"
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
 )
-
-func TestService_AddBannerToSlot(t *testing.T) {
-	type fields struct {
-		repo  Repository
-		kafka Kafka
-	}
-	type args struct {
-		ctx context.Context
-		req *models.BannerSlotRequest
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{
-				repo:  tt.fields.repo,
-				kafka: tt.fields.kafka,
-			}
-			if err := s.AddBannerToSlot(tt.args.ctx, tt.args.req); (err != nil) != tt.wantErr {
-				t.Errorf("AddBannerToSlot() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
 
 func TestService_CreateBanner(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -208,98 +179,252 @@ func TestService_CreateSlot(t *testing.T) {
 	}
 }
 
-func TestService_CreateClickEvent(t *testing.T) {
-	type fields struct {
-		repo  Repository
-		kafka Kafka
+func TestService_AddBannerToSlot(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := NewMockRepository(ctrl)
+	mockKafka := NewMockKafka(ctrl)
+
+	s := New(mockRepo, mockKafka)
+
+	ctx := context.Background()
+
+	request := &models.BannerSlotRequest{
+		SlotID:   1,
+		BannerID: 1,
 	}
-	type args struct {
-		ctx context.Context
-		req *models.EventRequest
-	}
+	testErr := errors.New("error")
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name      string
+		req       *models.BannerSlotRequest
+		repoMock  func(m *MockRepository)
+		kafkaMock func(m *MockKafka)
+		wantErr   error
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Success",
+			req:  request,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().AddBannerToSlot(ctx, request).Return(nil).Times(1)
+			},
+		},
+		{
+			name:    "Error",
+			req:     request,
+			wantErr: testErr,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().AddBannerToSlot(ctx, request).Return(testErr).Times(1)
+			},
+		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{
-				repo:  tt.fields.repo,
-				kafka: tt.fields.kafka,
+			if tt.repoMock != nil {
+				tt.repoMock(mockRepo)
 			}
-			if err := s.CreateClickEvent(tt.args.ctx, tt.args.req); (err != nil) != tt.wantErr {
-				t.Errorf("CreateClickEvent() error = %v, wantErr %v", err, tt.wantErr)
+
+			err := s.AddBannerToSlot(ctx, request)
+			if tt.wantErr != nil {
+				require.Error(t, err)
+				require.True(t, errors.Is(err, tt.wantErr))
 			}
 		})
 	}
 }
 
 func TestService_DeleteBannerFromSlot(t *testing.T) {
-	type fields struct {
-		repo  Repository
-		kafka Kafka
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := NewMockRepository(ctrl)
+	mockKafka := NewMockKafka(ctrl)
+
+	s := New(mockRepo, mockKafka)
+
+	ctx := context.Background()
+
+	request := &models.BannerSlotRequest{
+		SlotID:   1,
+		BannerID: 1,
 	}
-	type args struct {
-		ctx context.Context
-		req *models.BannerSlotRequest
-	}
+	testErr := errors.New("error")
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name      string
+		req       *models.BannerSlotRequest
+		repoMock  func(m *MockRepository)
+		kafkaMock func(m *MockKafka)
+		wantErr   error
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Success",
+			req:  request,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().DeleteBannerSlot(ctx, request).Return(nil).Times(1)
+			},
+		},
+		{
+			name:    "Error",
+			req:     request,
+			wantErr: testErr,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().DeleteBannerSlot(ctx, request).Return(testErr).Times(1)
+			},
+		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{
-				repo:  tt.fields.repo,
-				kafka: tt.fields.kafka,
+			if tt.repoMock != nil {
+				tt.repoMock(mockRepo)
 			}
-			if err := s.DeleteBannerFromSlot(tt.args.ctx, tt.args.req); (err != nil) != tt.wantErr {
-				t.Errorf("DeleteBannerFromSlot() error = %v, wantErr %v", err, tt.wantErr)
+
+			err := s.DeleteBannerFromSlot(ctx, request)
+			if tt.wantErr != nil {
+				require.Error(t, err)
+				require.True(t, errors.Is(err, tt.wantErr))
+			}
+		})
+	}
+}
+
+func TestService_CreateClickEvent(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := NewMockRepository(ctrl)
+	mockKafka := NewMockKafka(ctrl)
+
+	s := New(mockRepo, mockKafka)
+
+	ctx := context.Background()
+
+	request := &models.EventRequest{
+		BannerID: 1,
+		SlotID:   1,
+		GroupID:  1,
+	}
+	testErr := errors.New("error")
+	tests := []struct {
+		name      string
+		req       *models.EventRequest
+		repoMock  func(m *MockRepository)
+		kafkaMock func(m *MockKafka)
+		wantErr   error
+	}{
+		{
+			name: "Success",
+			req:  request,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().CreateClickEvent(ctx, request).Return(nil).Times(1)
+			},
+			kafkaMock: func(m *MockKafka) {
+				m.EXPECT().SendMessage(int64(1), int64(1), int64(1), models.KafkaTypeClick).Return(nil)
+			},
+		},
+		{
+			name:    "Error",
+			req:     request,
+			wantErr: testErr,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().CreateClickEvent(ctx, request).Return(testErr).Times(1)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.repoMock != nil {
+				tt.repoMock(mockRepo)
+			}
+			if tt.kafkaMock != nil {
+				tt.kafkaMock(mockKafka)
+			}
+
+			err := s.CreateClickEvent(ctx, request)
+			if tt.wantErr != nil {
+				require.Error(t, err)
+				require.True(t, errors.Is(err, tt.wantErr))
 			}
 		})
 	}
 }
 
 func TestService_NextBanner(t *testing.T) {
-	type fields struct {
-		repo  Repository
-		kafka Kafka
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockRepo := NewMockRepository(ctrl)
+	mockKafka := NewMockKafka(ctrl)
+
+	s := New(mockRepo, mockKafka)
+
+	ctx := context.Background()
+
+	request := &models.NextBannerRequest{
+		SlotID:  1,
+		GroupID: 1,
 	}
-	type args struct {
-		ctx context.Context
-		req *models.NextBannerRequest
-	}
+	testErr := errors.New("error")
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    int64
-		wantErr bool
+		name      string
+		req       *models.NextBannerRequest
+		repoMock  func(m *MockRepository)
+		kafkaMock func(m *MockKafka)
+		want      int64
+		wantErr   error
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Success",
+			req:  request,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().GetBannersInfo(ctx, request).Return([]models.BannerStats{
+					{
+						BannerID:   1,
+						SlotID:     1,
+						GroupID:    lo.ToPtr(int64(1)),
+						ViewCount:  1,
+						ClickCount: 1,
+					},
+				}, nil).Times(1)
+				m.EXPECT().IncrementBannerView(ctx, &models.EventRequest{
+					SlotID:   int64(1),
+					BannerID: int64(1),
+					GroupID:  int64(1),
+				}).Return(nil).Times(1)
+			},
+			kafkaMock: func(m *MockKafka) {
+				m.EXPECT().SendMessage(int64(1), int64(1), int64(1), models.KafkaTypeView).Return(nil)
+			},
+			want: int64(1),
+		},
+		{
+			name:    "Error",
+			req:     request,
+			wantErr: testErr,
+			repoMock: func(m *MockRepository) {
+				m.EXPECT().GetBannersInfo(ctx, request).Return(nil, testErr).Times(1)
+			},
+		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &Service{
-				repo:  tt.fields.repo,
-				kafka: tt.fields.kafka,
+			if tt.repoMock != nil {
+				tt.repoMock(mockRepo)
 			}
-			got, err := s.NextBanner(tt.args.ctx, tt.args.req)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("NextBanner() error = %v, wantErr %v", err, tt.wantErr)
-				return
+
+			if tt.kafkaMock != nil {
+				tt.kafkaMock(mockKafka)
 			}
-			if got != tt.want {
-				t.Errorf("NextBanner() got = %v, want %v", got, tt.want)
+
+			bannerID, err := s.NextBanner(ctx, request)
+			if tt.wantErr != nil {
+				require.Error(t, err)
+				require.True(t, errors.Is(err, tt.wantErr))
 			}
+
+			if err == nil && tt.want != 0 {
+				require.Equal(t, tt.want, bannerID)
+			}
+
 		})
 	}
 }

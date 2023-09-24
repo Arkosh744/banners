@@ -9,12 +9,12 @@ import (
 type Implementation struct {
 	desc.UnimplementedBannersServer
 
-	cartService Service
+	bannersService Service
 }
 
 func NewImplementation(s Service) *Implementation {
 	return &Implementation{
-		cartService: s,
+		bannersService: s,
 	}
 }
 

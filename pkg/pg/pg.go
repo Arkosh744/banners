@@ -59,7 +59,7 @@ func (p *pg) Ping(ctx context.Context) error {
 	return p.pgxPool.Ping(ctx)
 }
 
-func (p *pg) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgconn.CommandTag, error) {
+func (p *pg) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgconn.CommandTag, error) { //nolint: dupl // not a dupl
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Postgres.ExecContext")
 	defer span.Finish()
 
@@ -78,7 +78,7 @@ func (p *pg) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgc
 	return p.pgxPool.Exec(ctx, q.QueryRaw, args...)
 }
 
-func (p *pg) QueryContext(ctx context.Context, q Query, args ...interface{}) (pgx.Rows, error) {
+func (p *pg) QueryContext(ctx context.Context, q Query, args ...interface{}) (pgx.Rows, error) { //nolint: dupl // not a dupl
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Postgres.QueryContext")
 	defer span.Finish()
 

@@ -175,15 +175,15 @@ func (m *MockKafka) EXPECT() *MockKafkaMockRecorder {
 }
 
 // SendMessage mocks base method.
-func (m *MockKafka) SendMessage(BannerID, SlotID, GroupID int64) error {
+func (m *MockKafka) SendMessage(BannerID, SlotID, GroupID int64, msgType string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendMessage", BannerID, SlotID, GroupID)
+	ret := m.ctrl.Call(m, "SendMessage", BannerID, SlotID, GroupID, msgType)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SendMessage indicates an expected call of SendMessage.
-func (mr *MockKafkaMockRecorder) SendMessage(BannerID, SlotID, GroupID interface{}) *gomock.Call {
+func (mr *MockKafkaMockRecorder) SendMessage(BannerID, SlotID, GroupID, msgType interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMessage", reflect.TypeOf((*MockKafka)(nil).SendMessage), BannerID, SlotID, GroupID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendMessage", reflect.TypeOf((*MockKafka)(nil).SendMessage), BannerID, SlotID, GroupID, msgType)
 }

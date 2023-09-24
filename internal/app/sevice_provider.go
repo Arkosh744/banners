@@ -10,7 +10,6 @@ import (
 	"github.com/Arkosh744/banners/pkg/closer"
 	"github.com/Arkosh744/banners/pkg/kafka"
 	"github.com/Arkosh744/banners/pkg/pg"
-
 	"github.com/IBM/sarama"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
@@ -105,7 +104,7 @@ func ensureTopicExists(admin sarama.ClusterAdmin, topic string, numPartitions in
 			ReplicationFactor: replicationFactor,
 		}
 
-		if err = admin.CreateTopic(topic, details, false); err != nil {
+		if err := admin.CreateTopic(topic, details, false); err != nil {
 			return err
 		}
 	}
@@ -121,7 +120,7 @@ func (s *serviceProvider) GetService(ctx context.Context) bannersV1.Service {
 		}
 
 		kafkaProducer := kafka.NewProducer(producer, config.AppConfig.Kafka.Topic)
-		s.service = service.New(s.GetRepo(ctx), kafkaProducer)
+		s.service = service.New(s.GetRepo(ctx), &kafkaProducer)
 	}
 
 	return s.service
@@ -132,5 +131,5 @@ func (s *serviceProvider) GetBannersImpl(ctx context.Context) *bannersV1.Impleme
 		s.bannersImlp = bannersV1.NewImplementation(s.GetService(ctx))
 	}
 
-	return nil
+	return s.bannersImlp
 }

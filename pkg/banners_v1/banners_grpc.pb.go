@@ -29,7 +29,7 @@ type BannersClient interface {
 	AddBannerToSlot(ctx context.Context, in *BannerSlotRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteBannerFromSlot(ctx context.Context, in *BannerSlotRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateClickEvent(ctx context.Context, in *ClickEvent, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	NextBanner(ctx context.Context, in *NextBannerRequest, opts ...grpc.CallOption) (*BannerResp, error)
+	NextBanner(ctx context.Context, in *NextBannerRequest, opts ...grpc.CallOption) (*NextBannerResponse, error)
 }
 
 type bannersClient struct {
@@ -94,8 +94,8 @@ func (c *bannersClient) CreateClickEvent(ctx context.Context, in *ClickEvent, op
 	return out, nil
 }
 
-func (c *bannersClient) NextBanner(ctx context.Context, in *NextBannerRequest, opts ...grpc.CallOption) (*BannerResp, error) {
-	out := new(BannerResp)
+func (c *bannersClient) NextBanner(ctx context.Context, in *NextBannerRequest, opts ...grpc.CallOption) (*NextBannerResponse, error) {
+	out := new(NextBannerResponse)
 	err := c.cc.Invoke(ctx, "/banners.Banners/NextBanner", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -113,7 +113,7 @@ type BannersServer interface {
 	AddBannerToSlot(context.Context, *BannerSlotRequest) (*emptypb.Empty, error)
 	DeleteBannerFromSlot(context.Context, *BannerSlotRequest) (*emptypb.Empty, error)
 	CreateClickEvent(context.Context, *ClickEvent) (*emptypb.Empty, error)
-	NextBanner(context.Context, *NextBannerRequest) (*BannerResp, error)
+	NextBanner(context.Context, *NextBannerRequest) (*NextBannerResponse, error)
 	mustEmbedUnimplementedBannersServer()
 }
 
@@ -139,7 +139,7 @@ func (UnimplementedBannersServer) DeleteBannerFromSlot(context.Context, *BannerS
 func (UnimplementedBannersServer) CreateClickEvent(context.Context, *ClickEvent) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClickEvent not implemented")
 }
-func (UnimplementedBannersServer) NextBanner(context.Context, *NextBannerRequest) (*BannerResp, error) {
+func (UnimplementedBannersServer) NextBanner(context.Context, *NextBannerRequest) (*NextBannerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NextBanner not implemented")
 }
 func (UnimplementedBannersServer) mustEmbedUnimplementedBannersServer() {}

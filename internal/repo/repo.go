@@ -111,16 +111,16 @@ func (r *Repo) CreateClickEvent(ctx context.Context, req *models.EventRequest) e
 func (r *Repo) GetBannersInfo(ctx context.Context, req *models.NextBannerRequest) ([]models.BannerStats, error) {
 	query := `SELECT bs.banner_id,
 					bs.slot_id, 
-					bv.social_group_id, 
+					bv.group_id, 
 				    count(distinct bv.id) view_count, 
 					count(distinct cl.id) click_count
 			FROM banner_slot bs
-			LEFT JOIN banner_views bv ON bv.slot_id = bs.slot_id AND bv.banner_id = bs.banner_id
-			LEFT JOIN banner_clicks cl ON bv.slot_id = cl.slot_id AND bv.banner_id = cl.banner_id AND 
-											   bv.social_group_id = cl.social_group_id
-			WHERE bs.slot_id = $1 AND (bv.social_group_id = $2 OR bv.social_group_id is null)
-			GROUP BY bs.banner_id, bs.slot_id, bv.social_group_id
-			ORDER BY bv.social_group_id`
+			LEFT JOIN views bv ON bv.slot_id = bs.slot_id AND bv.banner_id = bs.banner_id
+			LEFT JOIN clicks cl ON bv.slot_id = cl.slot_id AND bv.banner_id = cl.banner_id AND 
+											   bv.group_id = cl.group_id
+			WHERE bs.slot_id = $1 AND (bv.group_id = $2 OR bv.group_id is null)
+			GROUP BY bs.banner_id, bs.slot_id, bv.group_id
+			ORDER BY bv.group_id`
 
 	q := pg.Query{
 		Name:     "banners.GetBannersInfo",
@@ -130,6 +130,12 @@ func (r *Repo) GetBannersInfo(ctx context.Context, req *models.NextBannerRequest
 	var banners []models.BannerStats
 	if err := r.db.PG().ScanAllContext(ctx, &banners, q, req.SlotID, req.GroupID); err != nil {
 		return nil, fmt.Errorf("failed to get banners info: %w", err)
+	}
+
+	for i := range banners {
+		if banners[i].GroupID == nil {
+			banners[i].GroupID = &req.GroupID
+		}
 	}
 
 	return banners, nil

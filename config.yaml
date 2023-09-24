@@ -3,8 +3,8 @@ grpc:
   port: 50052
 
 postgres:
-  host: localhost
-  port: 6543
+  host: banners_postgres
+  port: 5432
   user: banners-user
   password: banners-pass
   database: banners-db

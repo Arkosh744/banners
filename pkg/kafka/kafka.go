@@ -26,16 +26,18 @@ func NewProducer(producer sarama.SyncProducer, topic string) Producer {
 const MsgKey = "stats"
 
 type Message struct {
-	BannerID int64 `json:"bannerID"`
-	SlotID   int64 `json:"slotID"`
-	GroupID  int64 `json:"groupID"`
+	BannerID int64  `json:"banner_id"`
+	SlotID   int64  `json:"slot_id"`
+	GroupID  int64  `json:"group_id"`
+	MsgType  string `json:"msg_type"`
 }
 
-func (p *Producer) SendMessage(BannerID, SlotID, GroupID int64) error {
+func (p *Producer) SendMessage(bannerID, slotID, groupID int64, msgType string) error {
 	statMessage := Message{
-		BannerID: BannerID,
-		SlotID:   SlotID,
-		GroupID:  GroupID,
+		BannerID: bannerID,
+		SlotID:   slotID,
+		GroupID:  groupID,
+		MsgType:  msgType,
 	}
 
 	statMessageBytes, err := json.Marshal(statMessage)
@@ -57,9 +59,9 @@ func (p *Producer) SendMessage(BannerID, SlotID, GroupID int64) error {
 	}
 
 	log.Info("notification sent",
-		zap.Int64("BannerID", BannerID),
-		zap.Int64("GroupID", GroupID),
-		zap.Int64("SlotID", SlotID),
+		zap.Int64("bannerID", bannerID),
+		zap.Int64("groupID", groupID),
+		zap.Int64("slotID", slotID),
 		zap.Int32("partition", partition),
 		zap.Int64("offset", offset),
 	)

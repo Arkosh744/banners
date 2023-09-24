@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Arkosh744/banners/internal/config"
 	"github.com/Arkosh744/banners/internal/log"
+	descBannerV1 "github.com/Arkosh744/banners/pkg/banners_v1"
 	"github.com/Arkosh744/banners/pkg/closer"
 	"github.com/Arkosh744/banners/pkg/interceptor"
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -40,11 +41,11 @@ func (app *App) Run() error {
 	wg := sync.WaitGroup{}
 
 	wg.Add(1)
+
 	go func() {
 		defer wg.Done()
 
-		err := app.RunGrpcServer()
-		if err != nil {
+		if err := app.RunGrpcServer(); err != nil {
 			log.Fatal("failed to run grpc server", zap.Error(err))
 		}
 	}()
@@ -83,7 +84,7 @@ func (app *App) initServiceProvider(ctx context.Context) error {
 	return nil
 }
 
-func (app *App) initGrpcServer(_ context.Context) error {
+func (app *App) initGrpcServer(ctx context.Context) error {
 	app.grpcServer = grpc.NewServer(
 		grpc.UnaryInterceptor(grpcMiddleware.ChainUnaryServer(
 			interceptor.LoggingInterceptor,
@@ -91,6 +92,8 @@ func (app *App) initGrpcServer(_ context.Context) error {
 		),
 	)
 	reflection.Register(app.grpcServer)
+
+	descBannerV1.RegisterBannersServer(app.grpcServer, app.serviceProvider.GetBannersImpl(ctx))
 
 	return nil
 }

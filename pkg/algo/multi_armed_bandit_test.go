@@ -12,31 +12,31 @@ func TestMultiArmedBandit(t *testing.T) {
 	var testCases = []struct {
 		name             string
 		banners          []models.BannerStats
-		expectedBannerID []int
+		expectedBannerID []int64
 		expectedError    error
 	}{
 		{
 			name:             "no banners",
 			banners:          []models.BannerStats{},
-			expectedBannerID: []int{0},
-			expectedError:    models.ErrGetBanner,
+			expectedBannerID: []int64{0},
+			expectedError:    models.ErrNoBanner,
 		},
 		{
 			name:             "single banner",
 			banners:          []models.BannerStats{{BannerID: 1, ViewCount: 50, ClickCount: 10}},
-			expectedBannerID: []int{1},
+			expectedBannerID: []int64{1},
 			expectedError:    nil,
 		},
 		{
 			name:             "multiple banners same performance",
 			banners:          []models.BannerStats{{BannerID: 1, ViewCount: 50, ClickCount: 10}, {BannerID: 2, ViewCount: 50, ClickCount: 10}},
-			expectedBannerID: []int{1, 2},
+			expectedBannerID: []int64{1, 2},
 			expectedError:    nil,
 		},
 		{
 			name:             "multiple banners different performance",
 			banners:          []models.BannerStats{{BannerID: 1, ViewCount: 50, ClickCount: 10}, {BannerID: 2, ViewCount: 50, ClickCount: 5}},
-			expectedBannerID: []int{1},
+			expectedBannerID: []int64{1},
 			expectedError:    nil,
 		},
 	}

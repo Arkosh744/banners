@@ -5,17 +5,17 @@ type CreateRequest struct {
 }
 
 type BannerSlotRequest struct {
-	SlotID   int64 `json:"slotID"`
-	BannerID int64 `json:"bannerID"`
+	SlotID   int64 `json:"slot_id"`
+	BannerID int64 `json:"banner_id"`
 }
 
 type EventRequest struct {
-	SlotID   int64 `json:"slotID"`
-	BannerID int64 `json:"bannerID"`
-	GroupID  int64 `json:"groupID"`
+	SlotID   int64 `json:"slot_id"`
+	BannerID int64 `json:"banner_id"`
+	GroupID  int64 `json:"group_id"`
 }
 
 type NextBannerRequest struct {
-	SlotID  int64 `json:"slotID"`
-	GroupID int64 `json:"groupID"`
+	SlotID  int64 `json:"slot_id"`
+	GroupID int64 `json:"group_id"`
 }

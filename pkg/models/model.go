@@ -1,5 +1,10 @@
 package models
 
+const (
+	KafkaTypeView  = "view"
+	KafkaTypeClick = "click"
+)
+
 type Slot struct {
 	ID          int64  `json:"id"`
 	Description string `json:"description"`
@@ -16,10 +21,9 @@ type Group struct {
 }
 
 type BannerStats struct {
-	BannerID          int64  `json:"bannerID"`
-	BannerDescription string `json:"bannerDescription"`
-	SlotID            int64  `json:"slotID"`
-	SocialGroupID     int64  `json:"socialGroupID"`
-	ViewCount         int64  `json:"viewCount"`
-	ClickCount        int64  `json:"clickCount"`
+	BannerID   int64  `json:"banner_id"`
+	SlotID     int64  `json:"slot_id"`
+	GroupID    *int64 `json:"group_id"`
+	ViewCount  int64  `json:"view_count"`
+	ClickCount int64  `json:"click_count"`
 }

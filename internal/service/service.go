@@ -32,7 +32,7 @@ type Repository interface {
 }
 
 type Kafka interface {
-	SendMessage(BannerID, SlotID, GroupID int64) error
+	SendMessage(BannerID, SlotID, GroupID int64, msgType string) error
 }
 
 func (s *Service) CreateSlot(ctx context.Context, req *models.CreateRequest) (*models.Slot, error) {
@@ -92,6 +92,10 @@ func (s *Service) CreateClickEvent(ctx context.Context, req *models.EventRequest
 		return fmt.Errorf("error create click event: %w", err)
 	}
 
+	if err := s.kafka.SendMessage(req.BannerID, req.SlotID, req.GroupID, models.KafkaTypeClick); err != nil {
+		return fmt.Errorf("error send notification message click: %w", err)
+	}
+
 	return nil
 }
 
@@ -106,8 +110,8 @@ func (s *Service) NextBanner(ctx context.Context, req *models.NextBannerRequest)
 		return 0, fmt.Errorf("error get banner id: %w", err)
 	}
 
-	if err = s.kafka.SendMessage(bannerID, req.SlotID, req.GroupID); err != nil {
-		return 0, fmt.Errorf("error send notification message: %w", err)
+	if err = s.kafka.SendMessage(bannerID, req.SlotID, req.GroupID, models.KafkaTypeView); err != nil {
+		return 0, fmt.Errorf("error send notification message view: %w", err)
 	}
 
 	if err = s.repo.IncrementBannerView(ctx, &models.EventRequest{

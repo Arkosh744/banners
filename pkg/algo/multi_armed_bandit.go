@@ -50,7 +50,7 @@ func MultiArmedBandit(banners []models.BannerStats) (int64, error) {
 		return bannerIds[0], nil
 	}
 
-	bannerID = bannerIds[rand.Intn(len(bannerIds))] //nolint: gosec
+	bannerID = bannerIds[rand.Intn(len(bannerIds))] //nolint: gosec // it's ok here
 
 	return bannerID, nil
 }
