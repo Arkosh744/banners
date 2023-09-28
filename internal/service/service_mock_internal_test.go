@@ -151,7 +151,7 @@ func (mr *MockRepositoryMockRecorder) IncrementBannerView(ctx, req interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrementBannerView", reflect.TypeOf((*MockRepository)(nil).IncrementBannerView), ctx, req)
 }
 
-// MockKafka is a mock of Kafka interface.
+// MockKafka is a mock of MessageBroker interface.
 type MockKafka struct {
 	ctrl     *gomock.Controller
 	recorder *MockKafkaMockRecorder

@@ -1,7 +1,8 @@
-package banners_v1
+package banners
 
 import (
 	"context"
+
 	desc "github.com/Arkosh744/banners/pkg/banners_v1"
 	"github.com/Arkosh744/banners/pkg/models"
 	"google.golang.org/grpc/codes"

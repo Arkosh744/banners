@@ -2,8 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS slots
 (
-    id          serial PRIMARY KEY NOT NULL,
-    description text               NOT NULL DEFAULT ''
+    id          serial PRIMARY KEY,
+    description text NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS banners

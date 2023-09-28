@@ -9,14 +9,14 @@ import (
 )
 
 type Service struct {
-	repo  Repository
-	kafka Kafka
+	repo   Repository
+	broker MessageBroker
 }
 
-func New(repo Repository, kafka Kafka) *Service {
+func New(repo Repository, broker MessageBroker) *Service {
 	return &Service{
-		repo:  repo,
-		kafka: kafka,
+		repo:   repo,
+		broker: broker,
 	}
 }
 
@@ -31,7 +31,7 @@ type Repository interface {
 	IncrementBannerView(ctx context.Context, req *models.EventRequest) error
 }
 
-type Kafka interface {
+type MessageBroker interface {
 	SendMessage(BannerID, SlotID, GroupID int64, msgType string) error
 }
 
@@ -92,7 +92,7 @@ func (s *Service) CreateClickEvent(ctx context.Context, req *models.EventRequest
 		return fmt.Errorf("error create click event: %w", err)
 	}
 
-	if err := s.kafka.SendMessage(req.BannerID, req.SlotID, req.GroupID, models.KafkaTypeClick); err != nil {
+	if err := s.broker.SendMessage(req.BannerID, req.SlotID, req.GroupID, models.KafkaTypeClick); err != nil {
 		return fmt.Errorf("error send notification message click: %w", err)
 	}
 
@@ -110,7 +110,7 @@ func (s *Service) NextBanner(ctx context.Context, req *models.NextBannerRequest)
 		return 0, fmt.Errorf("error get banner id: %w", err)
 	}
 
-	if err = s.kafka.SendMessage(bannerID, req.SlotID, req.GroupID, models.KafkaTypeView); err != nil {
+	if err = s.broker.SendMessage(bannerID, req.SlotID, req.GroupID, models.KafkaTypeView); err != nil {
 		return 0, fmt.Errorf("error send notification message view: %w", err)
 	}
 

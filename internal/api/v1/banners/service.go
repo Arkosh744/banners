@@ -1,4 +1,4 @@
-package banners_v1
+package banners
 
 import (
 	"context"
