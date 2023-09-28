@@ -1,0 +1,21 @@
+grpc:
+  host: "0.0.0.0"
+  port: 50052
+
+postgres:
+  host: banners_postgres
+  port: 5432
+  user: banners-user
+  password: banners-pass
+  database: banners-db
+  sslmode: disable
+
+kafka:
+  brokers:
+    - kafka1:29091
+    - kafka2:29092
+    - kafka3:29093
+  topic: "banners"
+
+log:
+  preset: "dev"
