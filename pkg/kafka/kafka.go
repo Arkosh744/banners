@@ -3,10 +3,11 @@ package kafka
 import (
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/Arkosh744/banners/internal/log"
 	"github.com/IBM/sarama"
 	"go.uber.org/zap"
-	"time"
 )
 
 type Producer struct {
@@ -26,10 +27,10 @@ func NewProducer(producer sarama.SyncProducer, topic string) Producer {
 const MsgKey = "stats"
 
 type Message struct {
-	BannerID int64  `json:"banner_id"`
-	SlotID   int64  `json:"slot_id"`
-	GroupID  int64  `json:"group_id"`
-	MsgType  string `json:"msg_type"`
+	BannerID int64  `json:"bannerId"`
+	SlotID   int64  `json:"slotId"`
+	GroupID  int64  `json:"groupId"`
+	MsgType  string `json:"msgType"`
 }
 
 func (p *Producer) SendMessage(bannerID, slotID, groupID int64, msgType string) error {

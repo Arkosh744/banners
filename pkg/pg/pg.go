@@ -3,8 +3,8 @@ package pg
 import (
 	"context"
 	"fmt"
-	"github.com/Arkosh744/banners/internal/log"
 
+	"github.com/Arkosh744/banners/internal/log"
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -59,7 +59,7 @@ func (p *pg) Ping(ctx context.Context) error {
 	return p.pgxPool.Ping(ctx)
 }
 
-func (p *pg) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgconn.CommandTag, error) { //nolint: dupl // not a dupl
+func (p *pg) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgconn.CommandTag, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Postgres.ExecContext")
 	defer span.Finish()
 
@@ -68,8 +68,7 @@ func (p *pg) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgc
 
 	log.Info(fmt.Sprintf("%s; %v", q.QueryRaw, args))
 
-	tx := ctx.Value(key)
-	if tx != nil {
+	if tx := ctx.Value(key); tx != nil {
 		log.Info("do exec in tx")
 
 		return tx.(pgx.Tx).Exec(ctx, q.QueryRaw, args...)
@@ -78,7 +77,7 @@ func (p *pg) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgc
 	return p.pgxPool.Exec(ctx, q.QueryRaw, args...)
 }
 
-func (p *pg) QueryContext(ctx context.Context, q Query, args ...interface{}) (pgx.Rows, error) { //nolint: dupl // not a dupl
+func (p *pg) QueryContext(ctx context.Context, q Query, args ...interface{}) (pgx.Rows, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Postgres.QueryContext")
 	defer span.Finish()
 
@@ -87,8 +86,7 @@ func (p *pg) QueryContext(ctx context.Context, q Query, args ...interface{}) (pg
 
 	log.Info(fmt.Sprintf("%s; %v", q.QueryRaw, args))
 
-	tx := ctx.Value(key)
-	if tx != nil {
+	if tx := ctx.Value(key); tx != nil {
 		log.Info("do query in tx")
 
 		return tx.(pgx.Tx).Query(ctx, q.QueryRaw, args...)
@@ -106,8 +104,7 @@ func (p *pg) QueryRowContext(ctx context.Context, q Query, args ...interface{}) 
 
 	log.Info(fmt.Sprintf("%s; %v", q.QueryRaw, args))
 
-	tx := ctx.Value(key)
-	if tx != nil {
+	if tx := ctx.Value(key); tx != nil {
 		log.Info("do query row in tx")
 
 		return tx.(pgx.Tx).QueryRow(ctx, q.QueryRaw, args...)

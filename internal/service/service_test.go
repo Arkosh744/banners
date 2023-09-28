@@ -3,15 +3,16 @@ package service
 import (
 	"context"
 	"errors"
+	"reflect"
+	"testing"
+
 	"github.com/Arkosh744/banners/pkg/models"
 	"github.com/golang/mock/gomock"
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/require"
-	"reflect"
-	"testing"
 )
 
-func TestService_CreateBanner(t *testing.T) {
+func TestService_CreateBanner(t *testing.T) { //nolint: dupl // test
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockRepo := NewMockRepository(ctrl)
@@ -67,7 +68,7 @@ func TestService_CreateBanner(t *testing.T) {
 	}
 }
 
-func TestService_CreateGroup(t *testing.T) {
+func TestService_CreateGroup(t *testing.T) { //nolint: dupl // test
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockRepo := NewMockRepository(ctrl)
@@ -123,7 +124,7 @@ func TestService_CreateGroup(t *testing.T) {
 	}
 }
 
-func TestService_CreateSlot(t *testing.T) {
+func TestService_CreateSlot(t *testing.T) { //nolint: dupl // test
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockRepo := NewMockRepository(ctrl)
@@ -179,7 +180,7 @@ func TestService_CreateSlot(t *testing.T) {
 	}
 }
 
-func TestService_AddBannerToSlot(t *testing.T) {
+func TestService_AddBannerToSlot(t *testing.T) { //nolint: dupl // test
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockRepo := NewMockRepository(ctrl)
@@ -233,7 +234,7 @@ func TestService_AddBannerToSlot(t *testing.T) {
 	}
 }
 
-func TestService_DeleteBannerFromSlot(t *testing.T) {
+func TestService_DeleteBannerFromSlot(t *testing.T) { //nolint: dupl // test
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockRepo := NewMockRepository(ctrl)
@@ -424,7 +425,6 @@ func TestService_NextBanner(t *testing.T) {
 			if err == nil && tt.want != 0 {
 				require.Equal(t, tt.want, bannerID)
 			}
-
 		})
 	}
 }

@@ -1,9 +1,10 @@
 package algo
 
 import (
-	"github.com/Arkosh744/banners/pkg/models"
 	"math"
 	"math/rand"
+
+	"github.com/Arkosh744/banners/pkg/models"
 )
 
 func MultiArmedBandit(banners []models.BannerStats) (int64, error) {
@@ -17,7 +18,6 @@ func MultiArmedBandit(banners []models.BannerStats) (int64, error) {
 
 	var (
 		bannerID   int64
-		bannerIds  []int64
 		totalViews int64
 		maxIncome  float64 = -1
 	)
@@ -26,6 +26,7 @@ func MultiArmedBandit(banners []models.BannerStats) (int64, error) {
 		totalViews += banner.ViewCount
 	}
 
+	bannerIds := make([]int64, 0, len(banners))
 	for _, banner := range banners {
 		bannerIncome := (float64(banner.ClickCount) / float64(banner.ViewCount)) +
 			math.Sqrt((2.0*math.Log(float64(totalViews)))/float64(banner.ViewCount))

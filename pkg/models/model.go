@@ -21,9 +21,9 @@ type Group struct {
 }
 
 type BannerStats struct {
-	BannerID   int64  `json:"banner_id"`
-	SlotID     int64  `json:"slot_id"`
-	GroupID    *int64 `json:"group_id"`
-	ViewCount  int64  `json:"view_count"`
-	ClickCount int64  `json:"click_count"`
+	BannerID   int64  `json:"bannerId"`
+	SlotID     int64  `json:"slotId"`
+	GroupID    *int64 `json:"groupId"`
+	ViewCount  int64  `json:"viewCount"`
+	ClickCount int64  `json:"clickCount"`
 }

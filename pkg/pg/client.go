@@ -2,9 +2,9 @@ package pg
 
 import (
 	"context"
+
 	"github.com/Arkosh744/banners/internal/log"
 	"github.com/jackc/pgx/v4"
-
 	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/multierr"
 )

@@ -55,7 +55,8 @@ test:
 test-all: test-integration test
 
 lint: install-lint
-	${LINTBIN} run
+	gofumpt -w -extra ./
+	${LINTBIN} run --fix
 
 format: install-smartimports
 	${SMARTIMPORTS} -exclude internal/mocks

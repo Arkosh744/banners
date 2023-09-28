@@ -9,7 +9,7 @@ import (
 )
 
 func TestMultiArmedBandit(t *testing.T) {
-	var testCases = []struct {
+	testCases := []struct {
 		name             string
 		banners          []models.BannerStats
 		expectedBannerID []int64
@@ -28,14 +28,20 @@ func TestMultiArmedBandit(t *testing.T) {
 			expectedError:    nil,
 		},
 		{
-			name:             "multiple banners same performance",
-			banners:          []models.BannerStats{{BannerID: 1, ViewCount: 50, ClickCount: 10}, {BannerID: 2, ViewCount: 50, ClickCount: 10}},
+			name: "multiple banners same performance",
+			banners: []models.BannerStats{
+				{BannerID: 1, ViewCount: 50, ClickCount: 10},
+				{BannerID: 2, ViewCount: 50, ClickCount: 10},
+			},
 			expectedBannerID: []int64{1, 2},
 			expectedError:    nil,
 		},
 		{
-			name:             "multiple banners different performance",
-			banners:          []models.BannerStats{{BannerID: 1, ViewCount: 50, ClickCount: 10}, {BannerID: 2, ViewCount: 50, ClickCount: 5}},
+			name: "multiple banners different performance",
+			banners: []models.BannerStats{
+				{BannerID: 1, ViewCount: 50, ClickCount: 10},
+				{BannerID: 2, ViewCount: 50, ClickCount: 5},
+			},
 			expectedBannerID: []int64{1},
 			expectedError:    nil,
 		},

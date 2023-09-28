@@ -3,8 +3,9 @@ package config
 import (
 	"context"
 	"fmt"
-	"github.com/spf13/viper"
 	"net"
+
+	"github.com/spf13/viper"
 )
 
 var AppConfig = Config{}

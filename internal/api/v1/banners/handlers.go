@@ -63,7 +63,10 @@ func (i *Implementation) AddBannerToSlot(ctx context.Context, req *desc.BannerSl
 	return &emptypb.Empty{}, nil
 }
 
-func (i *Implementation) DeleteBannerFromSlot(ctx context.Context, req *desc.BannerSlotRequest) (*emptypb.Empty, error) {
+func (i *Implementation) DeleteBannerFromSlot(
+	ctx context.Context,
+	req *desc.BannerSlotRequest,
+) (*emptypb.Empty, error) {
 	if err := i.bannersService.DeleteBannerFromSlot(ctx, &models.BannerSlotRequest{
 		SlotID:   req.GetSlotId(),
 		BannerID: req.GetBannerId(),
@@ -86,7 +89,10 @@ func (i *Implementation) CreateClickEvent(ctx context.Context, req *desc.ClickEv
 	return &emptypb.Empty{}, nil
 }
 
-func (i *Implementation) NextBanner(ctx context.Context, req *desc.NextBannerRequest) (*desc.NextBannerResponse, error) {
+func (i *Implementation) NextBanner(
+	ctx context.Context,
+	req *desc.NextBannerRequest,
+) (*desc.NextBannerResponse, error) {
 	res, err := i.bannersService.NextBanner(ctx, &models.NextBannerRequest{
 		SlotID:  req.GetSlotId(),
 		GroupID: req.GetGroupId(),

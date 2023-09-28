@@ -29,7 +29,8 @@ type Closer struct {
 	funcs []func() error
 }
 
-// New returns new Closer, if []os.Signal is specified Closer will automatically call CloseAll when one of signals is received from OS.
+// New returns new Closer, if []os.Signal is specified Closer will automatically call CloseAll
+// when one of signals is received from OS.
 func New(sig ...os.Signal) *Closer {
 	c := &Closer{done: make(chan struct{})}
 

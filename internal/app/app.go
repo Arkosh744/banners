@@ -3,6 +3,9 @@ package app
 import (
 	"context"
 	"fmt"
+	"net"
+	"sync"
+
 	"github.com/Arkosh744/banners/internal/config"
 	"github.com/Arkosh744/banners/internal/log"
 	descBannerV1 "github.com/Arkosh744/banners/pkg/banners_v1"
@@ -10,11 +13,8 @@ import (
 	"github.com/Arkosh744/banners/pkg/interceptor"
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.uber.org/zap"
-	"google.golang.org/grpc/reflection"
-	"net"
-	"sync"
-
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type App struct {

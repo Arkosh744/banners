@@ -4,6 +4,7 @@ package service
 import (
 	"context"
 	"fmt"
+
 	"github.com/Arkosh744/banners/pkg/algo"
 	"github.com/Arkosh744/banners/pkg/models"
 )
